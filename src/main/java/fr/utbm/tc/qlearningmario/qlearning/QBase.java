@@ -30,10 +30,21 @@ import java.io.Serializable;
  * @version $FullVersion$
  * @mavenartifactid $ArtifactId$
  */
-interface QBase extends Cloneable, Serializable {
+abstract class QBase implements Cloneable, Serializable {
+
+	private static final long serialVersionUID = -5655614087791506859L;
+
+	private final int ID;
+
+	QBase(int ID) {
+		this.ID = ID;
+	}
+
 	/** Used to represent a QAction or a QState.
 	 *
 	 * @return the representation of the Q-Action/Q-State.
 	 */
-	int toInt();
+	public int toInt() {
+		return this.ID;
+	}
 }

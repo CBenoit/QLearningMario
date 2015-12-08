@@ -20,6 +20,7 @@
 
 package fr.utbm.tc.qlearningmario.qlearning;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /** Comparator of QState.
@@ -30,7 +31,12 @@ import java.util.Comparator;
  * @version $FullVersion$
  * @mavenartifactid $ArtifactId$
  */
-public class QStateNumberComparator implements Comparator<QState> {
+public class QStateNumberComparator implements Serializable, Comparator<QState> {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7356186862683666766L;
+
 	/**
 	 * {@inheritDoc}
 	 */

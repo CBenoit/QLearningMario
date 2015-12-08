@@ -28,17 +28,11 @@ package fr.utbm.tc.qlearningmario.qlearning;
  * @version $FullVersion$
  * @mavenartifactid $ArtifactId$
  */
-public class QState extends Counter implements QBase {
-	private static int numberOfQState;
+public class QState extends QBase {
+	private static final long serialVersionUID = -1721497050300212884L;
 
-	private static final long serialVersionUID = -1506512375211501871L;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int toInt() {
-		return getID();
+	public QState(int ID) {
+		super(ID);
 	}
 
 	/**
@@ -54,21 +48,5 @@ public class QState extends Counter implements QBase {
 		}
 
 		return clone;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected int getNumberOfObject() {
-		return numberOfQState;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void incrementNumberOfObject() {
-		++numberOfQState;
 	}
 }

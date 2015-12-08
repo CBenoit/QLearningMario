@@ -211,13 +211,13 @@ public class MarioProblem implements QProblem {
 	 */
 	public MarioProblem() {
 		for (int i = 0; i < this.states.length; ++i) {
-			this.states[i] = new QState();
+			this.states[i] = new QState(i);
 		}
 
 		this.currentState = this.states[0];
 
 		for (int i = 0; i < this.actions.length; ++i) {
-			this.actions[i] = new QAction();
+			this.actions[i] = new QAction(i);
 		}
 	}
 

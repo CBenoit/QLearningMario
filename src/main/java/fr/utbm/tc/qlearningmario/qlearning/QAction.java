@@ -28,17 +28,11 @@ package fr.utbm.tc.qlearningmario.qlearning;
  * @version $FullVersion$
  * @mavenartifactid $ArtifactId$
  */
-public class QAction extends Counter implements QBase {
-	private static int numberOfQAction = 0;
+public class QAction extends QBase {
+	private static final long serialVersionUID = 747430831701409320L;
 
-	private static final long serialVersionUID = 3721996842862787542L;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int toInt() {
-		return getID();
+	public QAction(int ID) {
+		super(ID);
 	}
 
 	/**
@@ -54,21 +48,5 @@ public class QAction extends Counter implements QBase {
 		}
 
 		return clone;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected int getNumberOfObject() {
-		return numberOfQAction;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void incrementNumberOfObject() {
-		++numberOfQAction;
 	}
 }
