@@ -27,6 +27,7 @@ import java.net.URL;
 import fr.utbm.tc.qlearningmario.mario.Scheduler;
 import fr.utbm.tc.qlearningmario.mario.agent.MarioAgent;
 import javafx.event.ActionEvent;
+import javafx.scene.control.MenuBar;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -57,6 +58,7 @@ public class MainController {
 		if (file != null) {
 			try {
 				this.currentFileURL = file.toURI().toURL();
+				enableSaveMenuItem();
 
 				MarioAgent marioAgent = scheduler.getMarioAgent();
 				if (marioAgent != null) {
@@ -108,6 +110,7 @@ public class MainController {
 		if (file != null) {
 			try {
 				this.currentFileURL = file.toURI().toURL();
+				enableSaveMenuItem();
 
 				MarioAgent marioAgent = scheduler.getMarioAgent();
 				if (marioAgent != null) {
@@ -120,5 +123,10 @@ public class MainController {
 		}
 
 		scheduler.unpause();
+	}
+
+	private void enableSaveMenuItem() {
+		MenuBar menuBar = (MenuBar) primaryStage.getScene().lookup("#mainMenuBar"); //$NON-NLS-1$
+		menuBar.getMenus().get(0).getItems().get(1).setDisable(false);
 	}
 }
