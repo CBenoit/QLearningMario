@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -31,25 +32,37 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Slider layoutX="14.0" layoutY="32.0" AnchorPane.topAnchor="25.0" />
-                        <Label layoutX="14.0" layoutY="10.0" text="Alpha" AnchorPane.topAnchor="5.0" />
-                        <Label layoutX="15.0" layoutY="57.0" text="Gamma" AnchorPane.topAnchor="45.0" />
-                        <Label layoutX="15.0" layoutY="100.0" text="Rho" AnchorPane.topAnchor="85.0" />
-                        <Label layoutX="15.0" layoutY="136.0" text="Nu" AnchorPane.topAnchor="125.0" />
-                        <Slider layoutX="14.0" layoutY="78.0" AnchorPane.topAnchor="65.0" />
-                        <Slider layoutX="14.0" layoutY="115.0" AnchorPane.topAnchor="105.0" />
-                        <Slider layoutX="14.0" layoutY="153.0" AnchorPane.topAnchor="145.0" />
-                        <Label fx:id="alphaValue" layoutX="154.0" layoutY="36.0" />
-                        <Label fx:id="gammaValue" layoutX="154.0" layoutY="76.0" />
-                        <Label fx:id="rhoValue" layoutX="154.0" layoutY="116.0" />
-                        <Label fx:id="nuValue" layoutX="154.0" layoutY="156.0" />
+                        <Slider fx:id="alphaSlider" layoutX="14.0" layoutY="28.0" max="1.0" value="0.5" AnchorPane.topAnchor="20.0" />
+                        <Label layoutX="15.0" layoutY="6.0" text="Alpha" AnchorPane.topAnchor="0.0" />
+                        <Label layoutX="15.0" layoutY="57.0" text="Gamma" AnchorPane.topAnchor="40.0" />
+                        <Label layoutX="15.0" layoutY="100.0" text="Rho" AnchorPane.topAnchor="80.0" />
+                        <Label layoutX="15.0" layoutY="136.0" text="Nu" AnchorPane.topAnchor="120.0" />
+                        <Slider fx:id="gammaSlider" layoutX="14.0" layoutY="78.0" max="1.0" value="0.5" AnchorPane.topAnchor="60.0" />
+                        <Slider fx:id="rhoSlider" layoutX="14.0" layoutY="115.0" max="1.0" value="0.3" AnchorPane.topAnchor="100.0" />
+                        <Slider fx:id="nuSlider" layoutX="14.0" layoutY="153.0" max="1.0" value="0.1" AnchorPane.topAnchor="140.0" />
+                        <Label fx:id="alphaLabel" layoutX="154.0" layoutY="29.0" text="0.5" />
+                        <Label fx:id="gammaLabel" layoutX="154.0" layoutY="69.0" text="0.5" />
+                        <Label fx:id="rhoLabel" layoutX="154.0" layoutY="109.0" text="0.3" />
+                        <Label fx:id="nuLabel" layoutX="154.0" layoutY="150.0" text="0.1" />
                      </children>
                   </AnchorPane>
                </content>
             </TitledPane>
             <TitledPane animated="false" text="Game Control">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePauseUnpause" text="Pause/Unpause" />
+                        <Button layoutX="166.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleKillMario" text="Kill Mario" />
+                        <Button layoutX="154.0" layoutY="137.0" mnemonicParsing="false" text="Reset level" />
+                        <Label layoutX="14.0" layoutY="62.0" text="Next level :" />
+                        <RadioButton layoutX="16.0" layoutY="104.0" mnemonicParsing="false" text="Level B">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="next_level_group" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton layoutX="16.0" layoutY="78.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="81.0" selected="true" text="Level A" toggleGroup="$next_level_group" />
+                     </children></AnchorPane>
                </content>
             </TitledPane>
          </panes>

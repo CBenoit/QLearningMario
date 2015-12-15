@@ -55,7 +55,7 @@ public abstract class Agent<B extends Body> {
 	 *
 	 * @return the body.
 	 */
-	protected final B getBody() {
+	public final B getBody() {
 		return this.body;
 	}
 }

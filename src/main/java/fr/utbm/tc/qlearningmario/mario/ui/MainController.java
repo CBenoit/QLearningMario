@@ -23,22 +23,74 @@ package fr.utbm.tc.qlearningmario.mario.ui;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 import fr.utbm.tc.qlearningmario.mario.Scheduler;
 import fr.utbm.tc.qlearningmario.mario.agent.MarioAgent;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Slider;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 @SuppressWarnings({ "static-method", "unused" })
-public class MainController {
+public class MainController implements Initializable {
 	public static Stage primaryStage;
 
 	public static Scheduler scheduler;
 
 	private URL currentFileURL;
+
+	@FXML
+	private MenuBar mainMenuBar;
+
+	@FXML
+	private Label alphaLabel;
+
+	@FXML
+	private Label gammaLabel;
+
+	@FXML
+	private Label rhoLabel;
+
+	@FXML
+	private Label nuLabel;
+
+	@FXML
+	private Slider alphaSlider;
+
+	@FXML
+	private Slider gammaSlider;
+
+	@FXML
+	private Slider rhoSlider;
+
+	@FXML
+	private Slider nuSlider;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		this.alphaSlider.valueProperty().addListener(
+				(ChangeListener<? super Number>) (arg0, arg1, arg2) ->
+				handleAlphaChange());
+
+		this.gammaSlider.valueProperty().addListener(
+				(ChangeListener<? super Number>) (arg0, arg1, arg2) ->
+				handleGammaChange());
+
+		this.rhoSlider.valueProperty().addListener(
+				(ChangeListener<? super Number>) (arg0, arg1, arg2) ->
+				handleRhoChange());
+
+		this.nuSlider.valueProperty().addListener(
+				(ChangeListener<? super Number>) (arg0, arg1, arg2) ->
+				handleNuChange());
+	}
 
 	public void handleCloseAction(ActionEvent event) {
 		primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
@@ -125,8 +177,42 @@ public class MainController {
 		scheduler.unpause();
 	}
 
+	public void handlePauseUnpause(ActionEvent event) {
+		if (scheduler.isPaused()) {
+			scheduler.unpause();
+		} else {
+			scheduler.pause();
+		}
+	}
+
+	public void handleKillMario(ActionEvent event) {
+		MarioAgent marioAgent = scheduler.getMarioAgent();
+		if (marioAgent != null) {
+			marioAgent.getBody().kill();
+		}
+	}
+
+	public void handleAlphaChange() {
+		String strVal = Double.toString(this.alphaSlider.getValue());
+		this.alphaLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+	}
+
+	public void handleGammaChange() {
+		String strVal = Double.toString(this.gammaSlider.getValue());
+		this.gammaLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+	}
+
+	public void handleRhoChange() {
+		String strVal = Double.toString(this.rhoSlider.getValue());
+		this.rhoLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+	}
+
+	public void handleNuChange() {
+		String strVal = Double.toString(this.nuSlider.getValue());
+		this.nuLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+	}
+
 	private void enableSaveMenuItem() {
-		MenuBar menuBar = (MenuBar) primaryStage.getScene().lookup("#mainMenuBar"); //$NON-NLS-1$
-		menuBar.getMenus().get(0).getItems().get(1).setDisable(false);
+		this.mainMenuBar.getMenus().get(0).getItems().get(1).setDisable(false);
 	}
 }

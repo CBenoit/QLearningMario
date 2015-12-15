@@ -56,7 +56,7 @@ public class Scheduler implements Runnable, WorldListener {
 
 	private boolean running = true;
 
-	private boolean paused = false;
+	private boolean paused = true;
 
 	private int updatesPerSecond = Integer.parseInt(Locale.getString(Scheduler.class, "updates.per.second")); //$NON-NLS-1$
 
@@ -121,6 +121,14 @@ public class Scheduler implements Runnable, WorldListener {
 	 */
 	public void unpause() {
 		this.paused = false;
+	}
+
+	/** Returns whether the scheduler is paused or not.
+	 *
+	 * @return a boolean.
+	 */
+	public boolean isPaused() {
+		return this.paused;
 	}
 
 	/** Update all agents.
