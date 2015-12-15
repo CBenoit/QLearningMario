@@ -37,6 +37,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -77,6 +79,9 @@ public class MainController implements Initializable {
 
 	@FXML
 	private Slider nuSlider;
+
+	@FXML
+	private TextField mindLearningIterationsText;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -219,6 +224,19 @@ public class MainController implements Initializable {
 		String strVal = Double.toString(nu);
 		this.nuLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
 		scheduler.getMarioAgent().getProblem().setNu((float) nu);
+	}
+
+	public void handleTextField(KeyEvent event) {
+		// Stops the event if the character is not a number.
+		try {
+			Integer.parseInt(event.getCharacter());
+		} catch (NumberFormatException e) {
+			event.consume();
+		}
+	}
+
+	public void handleMindLearn(ActionEvent event) {
+		scheduler.getMarioAgent().mindLearn(Integer.parseInt(this.mindLearningIterationsText.getText()));
 	}
 
 	private void enableSaveMenuItem() {
