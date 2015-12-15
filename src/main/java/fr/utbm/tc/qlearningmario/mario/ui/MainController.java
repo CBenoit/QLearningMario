@@ -194,23 +194,31 @@ public class MainController implements Initializable {
 	}
 
 	public void handleAlphaChange() {
-		String strVal = Double.toString(this.alphaSlider.getValue());
+		double alpha = this.alphaSlider.getValue();
+		String strVal = Double.toString(alpha);
 		this.alphaLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+		scheduler.getMarioAgent().getProblem().setAlpha((float) alpha);
 	}
 
 	public void handleGammaChange() {
-		String strVal = Double.toString(this.gammaSlider.getValue());
+		double gamma = this.gammaSlider.getValue();
+		String strVal = Double.toString(gamma);
 		this.gammaLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+		scheduler.getMarioAgent().getProblem().setGamma((float) gamma);
 	}
 
 	public void handleRhoChange() {
-		String strVal = Double.toString(this.rhoSlider.getValue());
+		double rho = this.rhoSlider.getValue();
+		String strVal = Double.toString(rho);
 		this.rhoLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+		scheduler.getMarioAgent().getProblem().setRho((float) rho);
 	}
 
 	public void handleNuChange() {
-		String strVal = Double.toString(this.nuSlider.getValue());
+		double nu = this.nuSlider.getValue();
+		String strVal = Double.toString(nu);
 		this.nuLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
+		scheduler.getMarioAgent().getProblem().setNu((float) nu);
 	}
 
 	private void enableSaveMenuItem() {

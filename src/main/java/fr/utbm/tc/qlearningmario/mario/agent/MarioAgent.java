@@ -81,6 +81,14 @@ public class MarioAgent extends Agent<MarioBody> {
 		}
 	}
 
+	/** Get the MarioProblem.
+	 *
+	 * @return MarioProblem
+	 */
+	public MarioProblem getProblem() {
+		return this.problem;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
