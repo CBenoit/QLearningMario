@@ -195,7 +195,12 @@ public class World {
 				}
 				mobileEntity.setVelocity(new Point2D(speedX, speedY));
 			}
+		}
+		mobileEntity.setLocation(new Point2D(mobileEntity.getLocation().getX(), mobileEntity.getLocation().getY() + movementY));
 
+		entityOnTheWay = getEntitiesOnTheWay(mobileEntity);
+
+		for (Entity<?> entity : entityOnTheWay) {
 			if (segmentIntersect(mobileEntity.getTopBound(), mobileEntity.getBottomBound(), entity.getTopBound(), entity.getBottomBound())) {
 				if (speedX > 0) {
 					if (Math.abs(entity.getLeftBound() - mobileEntity.getRightBound()) < Math.abs(movementX)) {
@@ -219,7 +224,7 @@ public class World {
 			}
 		}
 
-		mobileEntity.setLocation(new Point2D(mobileEntity.getLocation().getX() + movementX, mobileEntity.getLocation().getY() + movementY));
+		mobileEntity.setLocation(new Point2D(mobileEntity.getLocation().getX() + movementX, mobileEntity.getLocation().getY()));
 	}
 
 	private static boolean segmentIntersect(double x1, double x2, double y1, double y2) {
