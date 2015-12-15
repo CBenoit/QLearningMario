@@ -73,6 +73,7 @@ public class QLearning<Problem extends QProblem> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void loadQValues(URL fileName) throws IOException, ClassNotFoundException {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName.getPath()))) {
 			this.qValues = (Map<QState, Map<QAction, Float>>) ois.readObject(); // FIXME: TreeMaps cannot be serialized.

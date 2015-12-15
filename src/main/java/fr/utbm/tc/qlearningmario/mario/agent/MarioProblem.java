@@ -43,6 +43,11 @@ import fr.utbm.tc.qlearningmario.qlearning.QState;
  * @mavenartifactid $ArtifactId$
  */
 public class MarioProblem implements QProblem {
+	private float alpha = .5f;
+	private float gamma = .5f;
+	private float rho = .3f;
+	private float nu = .1f;
+
 	private static final int nbSquaresPerState = 10;
 
 	private static final long serialVersionUID = -989872950159367594L;
@@ -223,22 +228,38 @@ public class MarioProblem implements QProblem {
 
 	@Override
 	public float getAlpha() {
-		return .5f;
+		return this.alpha;
+	}
+
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
 	}
 
 	@Override
 	public float getGamma() {
-		return .5f;
+		return this.gamma;
+	}
+
+	public void setGamma(float gamma) {
+		this.gamma = gamma;
 	}
 
 	@Override
 	public float getRho() {
-		return .3f;
+		return this.rho;
+	}
+
+	public void setRho(float rho) {
+		this.rho = rho;
 	}
 
 	@Override
 	public float getNu() {
-		return .1f;
+		return this.nu;
+	}
+
+	public void setNu(float nu) {
+		this.nu = nu;
 	}
 
 	@Override

@@ -24,6 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
+
+import org.arakhne.afc.vmutil.locale.Locale;
 
 import fr.utbm.tc.qlearningmario.mario.Scheduler;
 import fr.utbm.tc.qlearningmario.mario.agent.MarioAgent;
@@ -45,6 +48,8 @@ public class MainController implements Initializable {
 	public static Scheduler scheduler;
 
 	private URL currentFileURL;
+
+	private Logger logger = Logger.getLogger(MainController.class.toString());
 
 	@FXML
 	private MenuBar mainMenuBar;
@@ -98,10 +103,10 @@ public class MainController implements Initializable {
 
 	public void handleOpenFile(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open AI file"); // FIXME: externalize.
+		fileChooser.setTitle(Locale.getString(this.getClass(), "fileChooser.window.title.load")); //$NON-NLS-1$
 		fileChooser.getExtensionFilters().addAll(
-				new FileChooser.ExtensionFilter("AI", "*.serai")  //$NON-NLS-1$ //$NON-NLS-2$
-				);
+				new FileChooser.ExtensionFilter("AI", "*.serai")); //$NON-NLS-1$ //$NON-NLS-2$
+
 
 		scheduler.pause();
 
@@ -117,13 +122,11 @@ public class MainController implements Initializable {
 					try {
 						marioAgent.loadQProblem(this.currentFileURL);
 					} catch (ClassNotFoundException e) {
-						// TODO: use logger.
-						e.printStackTrace();
+						this.logger.severe(e.getMessage());
 					}
 				}
 			} catch (IOException e) {
-				// TODO: use logger.
-				e.printStackTrace();
+				this.logger.severe(e.getMessage());
 			}
 		}
 
@@ -139,8 +142,7 @@ public class MainController implements Initializable {
 				try {
 					marioAgent.saveQProblem(this.currentFileURL);
 				} catch (IOException e) {
-					// TODO: use logger.
-					e.printStackTrace();
+					this.logger.severe(e.getMessage());
 				}
 
 				scheduler.unpause();
@@ -150,7 +152,7 @@ public class MainController implements Initializable {
 
 	public void handleSaveAsFile(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Save AI as…"); // FIXME: externalize.
+		fileChooser.setTitle(Locale.getString(this.getClass(), "fileChooser.window.title.save")); //$NON-NLS-1$
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("AI", "*.serai")  //$NON-NLS-1$ //$NON-NLS-2$
 				);
@@ -169,8 +171,7 @@ public class MainController implements Initializable {
 					marioAgent.saveQProblem(this.currentFileURL);
 				}
 			} catch (IOException e) {
-				// TODO: use logger.
-				e.printStackTrace();
+				this.logger.severe(e.getMessage());
 			}
 		}
 
