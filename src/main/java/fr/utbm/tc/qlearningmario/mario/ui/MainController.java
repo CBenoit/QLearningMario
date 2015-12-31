@@ -236,7 +236,10 @@ public class MainController implements Initializable {
 	}
 
 	public void handleMindLearn(ActionEvent event) {
-		scheduler.getMarioAgent().mindLearn(Integer.parseInt(this.mindLearningIterationsText.getText()));
+		MarioAgent marioAgent = scheduler.getMarioAgent();
+		if (marioAgent != null) {
+			marioAgent.mindLearn(Integer.parseInt(this.mindLearningIterationsText.getText()));
+		}
 	}
 
 	private void enableSaveMenuItem() {
