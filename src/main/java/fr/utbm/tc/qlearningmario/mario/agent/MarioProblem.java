@@ -330,9 +330,9 @@ public class MarioProblem implements QProblem {
 			if (sStates.get(SquarePosition.NEAR_RIGHT.getValue()) == SquareState.VOID) {
 				if (sStates.get(SquarePosition.NEAR_BOTTOM_RIGHT.getValue()) == SquareState.VOID) {
 					if (sStates.get(SquarePosition.EXTREME_BOTTOM_RIGHT.getValue()) == SquareState.VOID) {
-						score = FeedbackScore.BAD.getValue();
-					} else {
 						score = FeedbackScore.VERY_BAD.getValue();
+					} else {
+						score = FeedbackScore.BAD.getValue();
 					}
 				} else {
 					score = FeedbackScore.SLIGHT_GOOD.getValue();
@@ -363,10 +363,6 @@ public class MarioProblem implements QProblem {
 			break;
 		case JUMP:
 			if (sStates.get(SquarePosition.TOP.getValue()) == SquareState.VOID) {
-				if (sStates.get(SquarePosition.NEAR_LEFT.getValue()) == SquareState.ENEMY || sStates.get(SquarePosition.NEAR_RIGHT.getValue()) == SquareState.ENEMY) {
-					score = FeedbackScore.SLIGHT_GOOD.getValue();
-				}
-
 				// Mario left column
 				sStates.set(SquarePosition.NEAR_BOTTOM_LEFT.getValue(), sStates.get(SquarePosition.NEAR_LEFT.getValue()));
 				sStates.set(SquarePosition.NEAR_LEFT.getValue(), sStates.get(SquarePosition.TOP_LEFT.getValue()));
@@ -402,7 +398,7 @@ public class MarioProblem implements QProblem {
 		return new QFeedback(this.states[getQStateNumberFromSquareStates(sStates)], score);
 	}
 
-	/** Translate the current state of the world into a q-state understandable by the Q-Learning algorithm.
+	/** Translate the current state meof the world into a q-state understandable by the Q-Learning algorithm.
 	 *
 	 * @param mario : mario body.
 	 * @param perception : perception of mario.
