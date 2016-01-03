@@ -20,7 +20,9 @@
 
 package fr.utbm.tc.qlearningmario.mario;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
@@ -35,14 +37,15 @@ import fr.utbm.tc.qlearningmario.mario.entity.Goomba;
 import fr.utbm.tc.qlearningmario.mario.entity.MarioBody;
 import fr.utbm.tc.qlearningmario.mario.entity.World;
 import fr.utbm.tc.qlearningmario.mario.entity.WorldEvent;
-import fr.utbm.tc.qlearningmario.mario.entity.WorldEvent.Type;
 import fr.utbm.tc.qlearningmario.mario.entity.WorldListener;
 
 /** Runnable class which handle world and agents.
  *
- * @author Jérôme BOULMIER, Benoît CORTIER
- * @mavengroupid fr.utbm.tc
- * @mavenartifactid QLearningMario
+ * @author $Author: boulmier$
+ * @author $Author: cortier$
+ * @mavengroupid $GroupId$
+ * @version $FullVersion$
+ * @mavenartifactid $ArtifactId$
  */
 public class Scheduler implements Runnable, WorldListener {
 	private static final int ONE_SECOND_IN_MILLIS = 1000;
@@ -53,9 +56,13 @@ public class Scheduler implements Runnable, WorldListener {
 
 	private boolean running = true;
 
+	private boolean paused = true;
+
 	private int updatesPerSecond = Integer.parseInt(Locale.getString(Scheduler.class, "updates.per.second")); //$NON-NLS-1$
 
 	private final Logger log = Logger.getLogger(Scheduler.class.getName());
+
+	private final List<SchedulerListener> listeners = new ArrayList<>();
 
 	/** Initialize a new Scheduler with the given world.
 	 *
@@ -77,9 +84,11 @@ public class Scheduler implements Runnable, WorldListener {
 		while (this.running) {
 			start_millis = System.currentTimeMillis();
 
-			this.world.computePerceptions();
-			updateAgents();
-			this.world.update();
+			if (this.paused == false) {
+				this.world.computePerceptions();
+				updateAgents();
+				this.world.update();
+			}
 
 			elapsed_millis = System.currentTimeMillis() - start_millis;
 
@@ -96,10 +105,30 @@ public class Scheduler implements Runnable, WorldListener {
 		this.log.info(Locale.getString(Scheduler.this.getClass(), "scheduler.ended")); //$NON-NLS-1$
 	}
 
-	/** Stop the Scheduler.
+	/** Stop the scheduler.
 	 */
 	public void stop() {
 		this.running = false;
+	}
+
+	/** Pause the scheduler.
+	 */
+	public void pause() {
+		this.paused = true;
+	}
+
+	/** Unpause the scheduler.
+	 */
+	public void unpause() {
+		this.paused = false;
+	}
+
+	/** Returns whether the scheduler is paused or not.
+	 *
+	 * @return a boolean.
+	 */
+	public boolean isPaused() {
+		return this.paused;
 	}
 
 	/** Update all agents.
@@ -113,19 +142,60 @@ public class Scheduler implements Runnable, WorldListener {
 	@SuppressWarnings("boxing")
 	@Override
 	public void update(WorldEvent event) {
-		if (event.getType() == Type.ENTITY_ADDED) {
+		if (event.getType() == WorldEvent.Type.ENTITY_ADDED) {
 			Entity<?> entity = event.getEntity();
 			if (entity instanceof Goomba) {
 				this.log.info(Locale.getString(Scheduler.this.getClass(), "added.goomba")); //$NON-NLS-1$
 				GoombaAgent agent = new GoombaAgent((Goomba) entity);
 				this.agents.put(entity.getID(), agent);
+				fireAgentAdded(agent);
 			} else if (entity instanceof MarioBody) {
 				this.log.info(Locale.getString(Scheduler.this.getClass(), "added.mario")); //$NON-NLS-1$
 				MarioAgent agent = new MarioAgent((MarioBody) entity);
 				this.agents.put(entity.getID(), agent);
+				fireAgentAdded(agent);
 			}
-		} else if (event.getType() == Type.ENTITY_REMOVED) {
+		} else if (event.getType() == WorldEvent.Type.ENTITY_REMOVED) {
+			fireAgentRemoved(this.agents.get(event.getEntity().getID()));
 			this.agents.remove(event.getEntity().getID());
 		}
+	}
+
+	public MarioAgent getMarioAgent() {
+		for (Agent<?> agent : this.agents.values()) {
+			if (agent instanceof MarioAgent)
+				return (MarioAgent) agent;
+		}
+
+		return null;
+	}
+
+	public void addSchedulerListener(SchedulerListener schedulerListener) {
+		assert(schedulerListener != null);
+		this.listeners.add(schedulerListener);
+	}
+
+	public void removeWorldListener(SchedulerListener schedulerListener) {
+		assert(schedulerListener != null);
+		this.listeners.remove(schedulerListener);
+	}
+
+	private void fireEvent(SchedulerEvent e) {
+		SchedulerListener[] tab = new SchedulerListener[this.listeners.size()];
+		this.listeners.toArray(tab);
+
+		for (SchedulerListener schedulerListener : tab) {
+			schedulerListener.schedulerUpdated(e);
+		}
+	}
+
+	private void fireAgentAdded(Agent<?> agent) {
+		SchedulerEvent e = new SchedulerEvent(this, agent, SchedulerEvent.Type.AGENT_ADDED);
+		fireEvent(e);
+	}
+
+	private void fireAgentRemoved(Agent<?> agent) {
+		SchedulerEvent e = new SchedulerEvent(this, agent, SchedulerEvent.Type.AGENT_REMOVED);
+		fireEvent(e);
 	}
 }

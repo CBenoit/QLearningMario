@@ -20,15 +20,23 @@
 
 package fr.utbm.tc.qlearningmario.qlearning;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /** Comparator of QState.
  *
- * @author Jérôme BOULMIER, Benoît CORTIER
- * @mavengroupid fr.utbm.tc
- * @mavenartifactid QLearningMario
+ * @author $Author: boulmier$
+ * @author $Author: cortier$
+ * @mavengroupid $GroupId$
+ * @version $FullVersion$
+ * @mavenartifactid $ArtifactId$
  */
-public class QStateNumberComparator implements Comparator<QState> {
+public class QStateNumberComparator implements Serializable, Comparator<QState> {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7356186862683666766L;
+
 	/**
 	 * {@inheritDoc}
 	 */

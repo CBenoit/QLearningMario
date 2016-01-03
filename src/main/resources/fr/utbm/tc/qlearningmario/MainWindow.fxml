@@ -1,55 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="260.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <MenuBar prefHeight="30.0" prefWidth="520.0" BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-                  <MenuItem mnemonicParsing="false" text="Open..." />
-                  <MenuItem mnemonicParsing="false" text="Save" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
+<Pane prefHeight="260.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.tc.qlearningmario.mario.ui.MainController">
+   <children>
+      <MenuBar fx:id="mainMenuBar" prefHeight="30.0" prefWidth="520.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleOpenFile" text="Open..." />
+                  <MenuItem fx:id="saveMenuItem" disable="true" mnemonicParsing="false" onAction="#handleSaveFile" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAsFile" text="Save as..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleCloseAction" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
       </MenuBar>
-   </top>
-   <right>
-      <Accordion prefHeight="230.0" prefWidth="260.0" BorderPane.alignment="CENTER">
-        <panes>
-          <TitledPane animated="false" text="QLearning">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+      <Accordion layoutX="260.0" layoutY="30.0" prefHeight="230.0" prefWidth="260.0">
+         <panes>
+            <TitledPane animated="false" text="QLearning">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Slider layoutX="14.0" layoutY="32.0" AnchorPane.topAnchor="25.0" />
-                        <Label layoutX="14.0" layoutY="10.0" text="Alpha" AnchorPane.topAnchor="5.0" />
-                        <Label layoutX="15.0" layoutY="57.0" text="Gamma" AnchorPane.topAnchor="45.0" />
-                        <Label layoutX="15.0" layoutY="100.0" text="Rho" AnchorPane.topAnchor="85.0" />
-                        <Label layoutX="15.0" layoutY="136.0" text="Nu" AnchorPane.topAnchor="125.0" />
-                        <Slider layoutX="14.0" layoutY="78.0" AnchorPane.topAnchor="65.0" />
-                        <Slider layoutX="14.0" layoutY="115.0" AnchorPane.topAnchor="105.0" />
-                        <Slider layoutX="14.0" layoutY="153.0" AnchorPane.topAnchor="145.0" />
+                        <Slider fx:id="alphaSlider" layoutX="14.0" layoutY="28.0" max="1.0" value="0.5" AnchorPane.topAnchor="20.0" />
+                        <Label layoutX="15.0" layoutY="6.0" text="Alpha" AnchorPane.topAnchor="0.0" />
+                        <Label layoutX="15.0" layoutY="57.0" text="Gamma" AnchorPane.topAnchor="40.0" />
+                        <Label layoutX="15.0" layoutY="100.0" text="Rho" AnchorPane.topAnchor="80.0" />
+                        <Label layoutX="15.0" layoutY="136.0" text="Nu" AnchorPane.topAnchor="120.0" />
+                        <Slider fx:id="gammaSlider" layoutX="14.0" layoutY="78.0" max="1.0" value="0.5" AnchorPane.topAnchor="60.0" />
+                        <Slider fx:id="rhoSlider" layoutX="14.0" layoutY="115.0" max="1.0" value="0.3" AnchorPane.topAnchor="100.0" />
+                        <Slider fx:id="nuSlider" layoutX="14.0" layoutY="153.0" max="1.0" value="0.1" AnchorPane.topAnchor="140.0" />
+                        <Label fx:id="alphaLabel" layoutX="154.0" layoutY="29.0" text="0.5" />
+                        <Label fx:id="gammaLabel" layoutX="154.0" layoutY="69.0" text="0.5" />
+                        <Label fx:id="rhoLabel" layoutX="154.0" layoutY="109.0" text="0.3" />
+                        <Label fx:id="nuLabel" layoutX="154.0" layoutY="150.0" text="0.1" />
                      </children>
                   </AnchorPane>
-            </content>
-          </TitledPane>
-          <TitledPane animated="false" text="untitled 2">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </TitledPane>
-        </panes>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Game Control">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePauseUnpause" text="Pause/Unpause" />
+                        <Button layoutX="166.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleKillMario" text="Kill Mario" />
+                        <Button layoutX="154.0" layoutY="137.0" mnemonicParsing="false" text="Reset level" />
+                        <Label layoutX="14.0" layoutY="82.0" text="Next level :" />
+                        <RadioButton layoutX="16.0" layoutY="123.0" mnemonicParsing="false" text="Level B">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="next_level_group" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton layoutX="16.0" layoutY="98.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="81.0" selected="true" text="Level A" toggleGroup="$next_level_group" />
+                        <Button layoutX="14.0" layoutY="49.0" mnemonicParsing="false" onAction="#handleMindLearn" text="Mind learn" />
+                        <TextField fx:id="mindLearningIterationsText" layoutX="101.0" layoutY="49.0" onKeyTyped="#handleTextField" prefHeight="26.0" prefWidth="83.0" text="10000000" />
+                        <Text layoutX="187.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="times" />
+                     </children></AnchorPane>
+               </content>
+            </TitledPane>
+         </panes>
       </Accordion>
-   </right>
-</BorderPane>
+      <Canvas fx:id="marioCanvas" height="230.0" layoutY="30.0" width="260.0" />
+   </children>
+</Pane>

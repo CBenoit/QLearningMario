@@ -20,6 +20,9 @@
 
 package fr.utbm.tc.qlearningmario.mario.agent;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.arakhne.afc.vmutil.locale.Locale;
 
 import fr.utbm.tc.qlearningmario.mario.entity.MarioBody;
@@ -31,9 +34,11 @@ import javafx.geometry.Point2D;
  *
  * <p>It makes use of the Q-Learning engine.
  *
- * @author Benoît CORTIER
- * @mavengroupid fr.utbm.tc
- * @mavenartifactid QLearningMario
+ * @author $Author: boulmier$
+ * @author $Author: cortier$
+ * @mavengroupid $GroupId$
+ * @version $FullVersion$
+ * @mavenartifactid $ArtifactId$
  */
 public class MarioAgent extends Agent<MarioBody> {
 	private static final int NB_LEARNING_ITERATIONS;
@@ -54,6 +59,36 @@ public class MarioAgent extends Agent<MarioBody> {
 		super(body);
 	}
 
+	public void saveQProblem(URL fileName) throws IOException {
+		synchronized (this.qlearning) {
+			this.qlearning.saveQValues(fileName);
+		}
+	}
+
+	public void loadQProblem(URL fileName) throws IOException, ClassNotFoundException {
+		synchronized (this.qlearning) {
+			this.qlearning.loadQValues(fileName);
+		}
+	}
+
+	/** Makes the agent learn on its own without updating world state.
+	 *
+	 * @param nbIterations
+	 */
+	public void mindLearn(int nbIterations) {
+		synchronized (this.qlearning) {
+			this.qlearning.learn(nbIterations);
+		}
+	}
+
+	/** Get the MarioProblem.
+	 *
+	 * @return MarioProblem
+	 */
+	public MarioProblem getProblem() {
+		return this.problem;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -61,11 +96,15 @@ public class MarioAgent extends Agent<MarioBody> {
 	public void live() {
 		super.live();
 
-		this.problem.translateCurrentState(getBody(), getBody().getPerception());
-		this.qlearning.learn(NB_LEARNING_ITERATIONS);
+		MarioProblem.Action action;
 
-		QAction qAction = this.qlearning.getBestAction(this.problem.getCurrentState());
-		MarioProblem.Action action = MarioProblem.Action.fromQAction(qAction);
+		this.problem.translateCurrentState(getBody(), getBody().getPerception());
+		synchronized (this.qlearning) {
+			this.qlearning.learn(NB_LEARNING_ITERATIONS);
+
+			QAction qAction = this.qlearning.getBestAction(this.problem.getCurrentState());
+			action = MarioProblem.Action.fromQAction(qAction);
+		}
 
 		if (action == MarioProblem.Action.JUMP) {
 			getBody().askAcceleration(new Point2D(0, -getBody().getMaxAcceleration().getY()));

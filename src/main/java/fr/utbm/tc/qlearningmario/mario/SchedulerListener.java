@@ -18,27 +18,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *******************************************************************************/
 
-package fr.utbm.tc.qlearningmario.qlearning;
+package fr.utbm.tc.qlearningmario.mario;
 
-/** Counter of objects.
- *
- * @author Jérôme BOULMIER, Benoît CORTIER
- * @mavengroupid fr.utbm.tc
- * @mavenartifactid QLearningMario
- */
-abstract class Counter {
-	private final int id;
+import java.util.EventListener;
 
-	Counter() {
-		this.id = getNumberOfObject();
-		incrementNumberOfObject();
-	}
-
-	protected int getID() {
-		return this.id;
-	}
-
-	protected abstract int getNumberOfObject();
-
-	protected abstract void incrementNumberOfObject();
+public interface SchedulerListener extends EventListener {
+	void schedulerUpdated(SchedulerEvent e);
 }

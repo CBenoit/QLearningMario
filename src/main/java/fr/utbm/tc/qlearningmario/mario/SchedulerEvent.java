@@ -18,28 +18,45 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *******************************************************************************/
 
-package fr.utbm.tc.qlearningmario.qlearning;
+package fr.utbm.tc.qlearningmario.mario;
 
-import java.io.Serializable;
-import java.util.Comparator;
+import java.util.EventObject;
 
-/** Comparator of QAction.
- *
- * @author $Author: boulmier$
- * @author $Author: cortier$
- * @mavengroupid $GroupId$
- * @version $FullVersion$
- * @mavenartifactid $ArtifactId$
- */
-public class QActionNumberComparator implements Serializable, Comparator<QAction> {
+import fr.utbm.tc.qlearningmario.mario.agent.Agent;
 
-	private static final long serialVersionUID = -7304423344066809460L;
+public class SchedulerEvent extends EventObject {
 
-	/**
-	 * {@inheritDoc}
-	 */
+	public enum Type {
+		AGENT_ADDED,
+		AGENT_REMOVED
+	}
+
+	private static final long serialVersionUID = -8396490884864538128L;
+
+	private final Type eventType;
+
+	private Agent<?> agent;
+
+	public SchedulerEvent(Scheduler source, Type eventType) {
+		super(source);
+		this.eventType = eventType;
+	}
+
+	public SchedulerEvent(Scheduler source, Agent<?> agent, Type eventType) {
+		this(source, eventType);
+		this.agent = agent;
+	}
+
 	@Override
-	public int compare(QAction a, QAction b) {
-		return a.toInt() - b.toInt();
+	public Scheduler getSource() {
+		return (Scheduler) super.getSource();
+	}
+
+	public Agent<?> getAgent() {
+		return this.agent;
+	}
+
+	public Type getType() {
+		return this.eventType;
 	}
 }

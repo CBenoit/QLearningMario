@@ -38,7 +38,6 @@ public class World {
 
 	private MarioBody mario;
 
-
 	private static final double GRAVITY = Double.parseDouble(Locale.getString(World.class, "gravity")); //$NON-NLS-1$
 
 	private final List<WorldListener> listeners = new ArrayList<>();
@@ -101,6 +100,11 @@ public class World {
 	}
 
 	private void updateMobileEntity(MobileEntity<?> mobileEntity) {
+		if (mobileEntity instanceof Damageable && mobileEntity.getLocation().getY() > 16) {
+			((Damageable) mobileEntity).kill();
+			return;
+		}
+
 		if (this.mario != null) {
 			if (this.mario.distance(mobileEntity) > Game.SCENE_WIDTH/Game.SCALE)
 				return;
@@ -191,7 +195,12 @@ public class World {
 				}
 				mobileEntity.setVelocity(new Point2D(speedX, speedY));
 			}
+		}
+		mobileEntity.setLocation(new Point2D(mobileEntity.getLocation().getX(), mobileEntity.getLocation().getY() + movementY));
 
+		entityOnTheWay = getEntitiesOnTheWay(mobileEntity);
+
+		for (Entity<?> entity : entityOnTheWay) {
 			if (segmentIntersect(mobileEntity.getTopBound(), mobileEntity.getBottomBound(), entity.getTopBound(), entity.getBottomBound())) {
 				if (speedX > 0) {
 					if (Math.abs(entity.getLeftBound() - mobileEntity.getRightBound()) < Math.abs(movementX)) {
@@ -215,7 +224,7 @@ public class World {
 			}
 		}
 
-		mobileEntity.setLocation(new Point2D(mobileEntity.getLocation().getX() + movementX, mobileEntity.getLocation().getY() + movementY));
+		mobileEntity.setLocation(new Point2D(mobileEntity.getLocation().getX() + movementX, mobileEntity.getLocation().getY()));
 	}
 
 	private static boolean segmentIntersect(double x1, double x2, double y1, double y2) {
