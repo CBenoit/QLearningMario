@@ -398,7 +398,7 @@ public class MarioProblem implements QProblem {
 		return new QFeedback(this.states[getQStateNumberFromSquareStates(sStates)], score);
 	}
 
-	/** Translate the current state meof the world into a q-state understandable by the Q-Learning algorithm.
+	/** Translate the current state of the world into a q-state understandable by the Q-Learning algorithm.
 	 *
 	 * @param mario : mario body.
 	 * @param perception : perception of mario.
