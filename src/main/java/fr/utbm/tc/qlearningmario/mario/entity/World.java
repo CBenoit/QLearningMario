@@ -34,7 +34,7 @@ import javafx.scene.shape.Polygon;
 public class World {
 	private static final int UPDATES_PER_SECOND;
 
-	private List<Entity<?>> entities = new ArrayList<>();
+	private final List<Entity<?>> entities = new ArrayList<>();
 
 	private MarioBody mario;
 
@@ -47,9 +47,9 @@ public class World {
 	}
 
 	public void computePerceptions() {
-		for (Entity<?> entity : this.entities) {
+		for (final Entity<?> entity : this.entities) {
 			if (entity instanceof AgentBody) {
-				AgentBody agentBody = ((AgentBody) entity);
+				final AgentBody agentBody = ((AgentBody) entity);
 
 				// Compute the AgentBody's perception.
 				agentBody.setPerception(getNearbyEntities(entity, agentBody.getPerceptionDistance()));
@@ -62,10 +62,11 @@ public class World {
 	}
 
 	public List<Entity<?>> getNearbyEntities(Entity<?> entity, double distance) {
-		List<Entity<?>> nearbyEntities = new ArrayList<>();
-		for (Entity<?> otherEntity : this.entities) {
-			if (entity.distance(otherEntity) < distance)
+		final List<Entity<?>> nearbyEntities = new ArrayList<>();
+		for (final Entity<?> otherEntity : this.entities) {
+			if (entity.distance(otherEntity) < distance) {
 				nearbyEntities.add(otherEntity);
+			}
 		}
 
 		nearbyEntities.remove(entity);
@@ -74,9 +75,9 @@ public class World {
 	}
 
 	public void update() {
-		Iterator<Entity<?>> iterator = this.entities.iterator();
+		final Iterator<Entity<?>> iterator = this.entities.iterator();
 		while (iterator.hasNext()) {
-			Entity<?> entity = iterator.next();
+			final Entity<?> entity = iterator.next();
 
 			if (entity instanceof Damageable && ((Damageable) entity).isDead()) {
 				iterator.remove();
@@ -90,13 +91,25 @@ public class World {
 	}
 
 	public void addEntity(Entity<?> entity) {
-		this.entities.add(entity);
+		synchronized (this.entities) {
+			this.entities.add(entity);
 
-		if (entity instanceof MarioBody) {
-			this.mario = (MarioBody) entity;
+			if (entity instanceof MarioBody) {
+				this.mario = (MarioBody) entity;
+			}
+
+			fireEntityAdded(entity);
 		}
+	}
 
-		fireEntityAdded(entity);
+	public void clearEntities() {
+		synchronized (this.entities) {
+			for (final Entity<?> entity : this.entities) {
+				fireEntityRemoved(entity);
+			}
+
+			this.entities.clear();
+		}
 	}
 
 	private void updateMobileEntity(MobileEntity<?> mobileEntity) {
@@ -106,14 +119,15 @@ public class World {
 		}
 
 		if (this.mario != null) {
-			if (this.mario.distance(mobileEntity) > Game.SCENE_WIDTH/Game.SCALE)
+			if (this.mario.distance(mobileEntity) > Game.SCENE_WIDTH/Game.SCALE) {
 				return;
+			}
 		}
 
 		double accelerationX, accelerationY = 0, speedX, speedY, movementX, movementY;
 
 		if (mobileEntity instanceof AgentBody) {
-			AgentBody agentBody = (AgentBody)mobileEntity;
+			final AgentBody agentBody = (AgentBody)mobileEntity;
 
 			if (mobileEntity.isOnGround()) {
 				accelerationX = agentBody.getWantedAcceleration().getX();
@@ -125,18 +139,20 @@ public class World {
 			accelerationY += GRAVITY;
 
 
-			if (Math.abs(accelerationX) > mobileEntity.getMaxAcceleration().getX())
+			if (Math.abs(accelerationX) > mobileEntity.getMaxAcceleration().getX()) {
 				accelerationX = accelerationX / Math.abs(accelerationX) * mobileEntity.getMaxAcceleration().getX();
+			}
 
-			if (Math.abs(accelerationY) > mobileEntity.getMaxAcceleration().getY())
+			if (Math.abs(accelerationY) > mobileEntity.getMaxAcceleration().getY()) {
 				accelerationY = accelerationY / Math.abs(accelerationY) * mobileEntity.getMaxAcceleration().getY();
+			}
 
 			speedX = mobileEntity.getVelocity().getX() + accelerationX;
 			speedY = mobileEntity.getVelocity().getY() + accelerationY;
 
 			// Handle damages between Mario and the enemies.
 			if (mobileEntity instanceof MarioBody) {
-				for (Entity<?> entity : getNearbyEntities(mobileEntity,
+				for (final Entity<?> entity : getNearbyEntities(mobileEntity,
 						Math.max(mobileEntity.getHitbox().getHeight(),
 								mobileEntity.getHitbox().getWidth()))) {
 					if (entity instanceof Enemy) {
@@ -172,7 +188,7 @@ public class World {
 
 		List<Entity<?>> entityOnTheWay = getEntitiesOnTheWay(mobileEntity);
 
-		for (Entity<?> entity : entityOnTheWay) {
+		for (final Entity<?> entity : entityOnTheWay) {
 			if (segmentIntersect(mobileEntity.getLeftBound(), mobileEntity.getRightBound(),
 					entity.getLeftBound(), entity.getRightBound())) {
 				if (speedY > 0) {
@@ -200,7 +216,7 @@ public class World {
 
 		entityOnTheWay = getEntitiesOnTheWay(mobileEntity);
 
-		for (Entity<?> entity : entityOnTheWay) {
+		for (final Entity<?> entity : entityOnTheWay) {
 			if (segmentIntersect(mobileEntity.getTopBound(), mobileEntity.getBottomBound(), entity.getTopBound(), entity.getBottomBound())) {
 				if (speedX > 0) {
 					if (Math.abs(entity.getLeftBound() - mobileEntity.getRightBound()) < Math.abs(movementX)) {
@@ -233,18 +249,18 @@ public class World {
 
 	@SuppressWarnings("boxing")
 	private List<Entity<?>> getEntitiesOnTheWay(MobileEntity<?> entity) {
-		double positionX = entity.getLocation().getX();
-		double positionY = entity.getLocation().getY();
-		double newPositionX = positionX + entity.getVelocity().getX() / UPDATES_PER_SECOND;
-		double newPositionY = positionY + entity.getVelocity().getY() / UPDATES_PER_SECOND;
+		final double positionX = entity.getLocation().getX();
+		final double positionY = entity.getLocation().getY();
+		final double newPositionX = positionX + entity.getVelocity().getX() / UPDATES_PER_SECOND;
+		final double newPositionY = positionY + entity.getVelocity().getY() / UPDATES_PER_SECOND;
 
 
-		Polygon polygon = new Polygon();
+		final Polygon polygon = new Polygon();
 
-		double Left = Math.min(positionX, newPositionX);
-		double Right = Math.max(positionX, newPositionX) + entity.getHitbox().getWidth();
-		double Down = Math.min(positionY, newPositionY) + entity.getHitbox().getHeight();
-		double Top = Math.max(positionY, newPositionY);
+		final double Left = Math.min(positionX, newPositionX);
+		final double Right = Math.max(positionX, newPositionX) + entity.getHitbox().getWidth();
+		final double Down = Math.min(positionY, newPositionY) + entity.getHitbox().getHeight();
+		final double Top = Math.max(positionY, newPositionY);
 
 		if (positionY < newPositionY && positionX > newPositionX
 				|| positionY > newPositionY && positionX < newPositionX) {
@@ -266,13 +282,13 @@ public class World {
 					Left, Top + entity.getHitbox().getHeight()});
 		}
 
-		List<Entity<?>> nearbyEntities = getNearbyEntities(entity,
+		final List<Entity<?>> nearbyEntities = getNearbyEntities(entity,
 				entity.getLocation().distance(newPositionX + entity.getHitbox().getWidth(),
 						newPositionY + entity.getHitbox().getHeight()));
 
-		Iterator<Entity<?>> iterator = nearbyEntities.iterator();
+		final Iterator<Entity<?>> iterator = nearbyEntities.iterator();
 		while (iterator.hasNext()) {
-			Entity<?> currentEntity = iterator.next();
+			final Entity<?> currentEntity = iterator.next();
 
 			if (!(currentEntity instanceof Solid)
 					|| !(polygon.intersects(currentEntity.getLocation().getX(),
@@ -297,26 +313,26 @@ public class World {
 	}
 
 	private void fireEvent(WorldEvent e) {
-		WorldListener[] tab = new WorldListener[this.listeners.size()];
+		final WorldListener[] tab = new WorldListener[this.listeners.size()];
 		this.listeners.toArray(tab);
 
-		for (WorldListener worldListener : tab) {
+		for (final WorldListener worldListener : tab) {
 			worldListener.update(e);
 		}
 	}
 
 	private void fireWorldUpdate() {
-		WorldEvent e = new WorldEvent(this, Type.WORLD_UPDATE);
+		final WorldEvent e = new WorldEvent(this, Type.WORLD_UPDATE);
 		fireEvent(e);
 	}
 
 	private void fireEntityAdded(Entity<?> entity) {
-		WorldEvent e = new WorldEvent(this, entity, Type.ENTITY_ADDED);
+		final WorldEvent e = new WorldEvent(this, entity, Type.ENTITY_ADDED);
 		fireEvent(e);
 	}
 
 	private void fireEntityRemoved(Entity<?> entity) {
-		WorldEvent e = new WorldEvent(this, entity, Type.ENTITY_REMOVED);
+		final WorldEvent e = new WorldEvent(this, entity, Type.ENTITY_REMOVED);
 		fireEvent(e);
 	}
 }

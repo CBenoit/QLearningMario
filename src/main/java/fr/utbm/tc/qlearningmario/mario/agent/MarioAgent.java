@@ -47,9 +47,9 @@ public class MarioAgent extends Agent<MarioBody> {
 		NB_LEARNING_ITERATIONS = Integer.parseInt(Locale.getString(MarioAgent.class, "number.learning.iterations")); //$NON-NLS-1$
 	}
 
-	private MarioProblem problem = new MarioProblem();
+	private static final MarioProblem PROBLEM = new MarioProblem();
 
-	private QLearning<MarioProblem> qlearning = new QLearning<>(this.problem);
+	private static final QLearning<MarioProblem> QLEARNING = new QLearning<>(PROBLEM);
 
 	/** Initialize the agent with the given MarioBody.
 	 *
@@ -59,15 +59,15 @@ public class MarioAgent extends Agent<MarioBody> {
 		super(body);
 	}
 
-	public void saveQProblem(URL fileName) throws IOException {
-		synchronized (this.qlearning) {
-			this.qlearning.saveQValues(fileName);
+	public static void saveQProblem(URL fileName) throws IOException {
+		synchronized (MarioAgent.QLEARNING) {
+			MarioAgent.QLEARNING.saveQValues(fileName);
 		}
 	}
 
-	public void loadQProblem(URL fileName) throws IOException, ClassNotFoundException {
-		synchronized (this.qlearning) {
-			this.qlearning.loadQValues(fileName);
+	public static void loadQProblem(URL fileName) throws IOException, ClassNotFoundException {
+		synchronized (MarioAgent.QLEARNING) {
+			MarioAgent.QLEARNING.loadQValues(fileName);
 		}
 	}
 
@@ -75,9 +75,9 @@ public class MarioAgent extends Agent<MarioBody> {
 	 *
 	 * @param nbIterations
 	 */
-	public void mindLearn(int nbIterations) {
-		synchronized (this.qlearning) {
-			this.qlearning.learn(nbIterations);
+	public static void mindLearn(int nbIterations) {
+		synchronized (MarioAgent.QLEARNING) {
+			MarioAgent.QLEARNING.learn(nbIterations);
 		}
 	}
 
@@ -85,8 +85,8 @@ public class MarioAgent extends Agent<MarioBody> {
 	 *
 	 * @return MarioProblem
 	 */
-	public MarioProblem getProblem() {
-		return this.problem;
+	public static MarioProblem getProblem() {
+		return MarioAgent.PROBLEM;
 	}
 
 	/**
@@ -96,13 +96,13 @@ public class MarioAgent extends Agent<MarioBody> {
 	public void live() {
 		super.live();
 
-		MarioProblem.Action action;
+		final MarioProblem.Action action;
 
-		this.problem.translateCurrentState(getBody(), getBody().getPerception());
-		synchronized (this.qlearning) {
-			this.qlearning.learn(NB_LEARNING_ITERATIONS);
+		MarioAgent.PROBLEM.translateCurrentState(getBody(), getBody().getPerception());
+		synchronized (MarioAgent.QLEARNING) {
+			MarioAgent.QLEARNING.learn(NB_LEARNING_ITERATIONS);
 
-			QAction qAction = this.qlearning.getBestAction(this.problem.getCurrentState());
+			final QAction qAction = MarioAgent.QLEARNING.getBestAction(MarioAgent.PROBLEM.getCurrentState());
 			action = MarioProblem.Action.fromQAction(qAction);
 		}
 

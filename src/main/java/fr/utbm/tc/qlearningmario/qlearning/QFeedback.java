@@ -47,7 +47,7 @@ public class QFeedback implements Cloneable, Serializable {
 		this.score = score;
 	}
 
-	/** Return the score.
+	/** Returns the score.
 	 *
 	 * @return the score
 	 */
@@ -55,7 +55,7 @@ public class QFeedback implements Cloneable, Serializable {
 		return this.score;
 	}
 
-	/** Return the new state.
+	/** Returns the new state.
 	 *
 	 * @return the new state.
 	 */

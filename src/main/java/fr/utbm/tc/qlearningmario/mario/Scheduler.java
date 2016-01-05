@@ -20,6 +20,8 @@
 
 package fr.utbm.tc.qlearningmario.mario;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import org.arakhne.afc.vmutil.Resources;
 import org.arakhne.afc.vmutil.locale.Locale;
 
 import fr.utbm.tc.qlearningmario.mario.agent.Agent;
@@ -50,15 +53,15 @@ import fr.utbm.tc.qlearningmario.mario.entity.WorldListener;
 public class Scheduler implements Runnable, WorldListener {
 	private static final int ONE_SECOND_IN_MILLIS = 1000;
 
-	private World world;
+	private final World world;
 
-	private Map<Integer, Agent<?>> agents = new HashMap<>();
+	private final Map<Integer, Agent<?>> agents = new HashMap<>();
 
 	private boolean running = true;
 
 	private boolean paused = true;
 
-	private int updatesPerSecond = Integer.parseInt(Locale.getString(Scheduler.class, "updates.per.second")); //$NON-NLS-1$
+	private final int updatesPerSecond = Integer.parseInt(Locale.getString(Scheduler.class, "updates.per.second")); //$NON-NLS-1$
 
 	private final Logger log = Logger.getLogger(Scheduler.class.getName());
 
@@ -80,6 +83,8 @@ public class Scheduler implements Runnable, WorldListener {
 		long elapsed_millis;
 		long sleep_millis;
 
+		loadLevel(Levels.LEVEL_B);
+
 		this.running = true;
 		while (this.running) {
 			start_millis = System.currentTimeMillis();
@@ -96,7 +101,7 @@ public class Scheduler implements Runnable, WorldListener {
 			if (sleep_millis > 0) {
 				try {
 					Thread.sleep(sleep_millis);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					this.log.severe(e.toString());
 				}
 			}
@@ -134,7 +139,7 @@ public class Scheduler implements Runnable, WorldListener {
 	/** Update all agents.
 	 */
 	private void updateAgents() {
-		for (Entry<Integer, Agent<?>> agent : this.agents.entrySet()) {
+		for (final Entry<Integer, Agent<?>> agent : this.agents.entrySet()) {
 			agent.getValue().live();
 		}
 	}
@@ -143,15 +148,15 @@ public class Scheduler implements Runnable, WorldListener {
 	@Override
 	public void update(WorldEvent event) {
 		if (event.getType() == WorldEvent.Type.ENTITY_ADDED) {
-			Entity<?> entity = event.getEntity();
+			final Entity<?> entity = event.getEntity();
 			if (entity instanceof Goomba) {
 				this.log.info(Locale.getString(Scheduler.this.getClass(), "added.goomba")); //$NON-NLS-1$
-				GoombaAgent agent = new GoombaAgent((Goomba) entity);
+				final GoombaAgent agent = new GoombaAgent((Goomba) entity);
 				this.agents.put(entity.getID(), agent);
 				fireAgentAdded(agent);
 			} else if (entity instanceof MarioBody) {
 				this.log.info(Locale.getString(Scheduler.this.getClass(), "added.mario")); //$NON-NLS-1$
-				MarioAgent agent = new MarioAgent((MarioBody) entity);
+				final MarioAgent agent = new MarioAgent((MarioBody) entity);
 				this.agents.put(entity.getID(), agent);
 				fireAgentAdded(agent);
 			}
@@ -162,9 +167,10 @@ public class Scheduler implements Runnable, WorldListener {
 	}
 
 	public MarioAgent getMarioAgent() {
-		for (Agent<?> agent : this.agents.values()) {
-			if (agent instanceof MarioAgent)
+		for (final Agent<?> agent : this.agents.values()) {
+			if (agent instanceof MarioAgent) {
 				return (MarioAgent) agent;
+			}
 		}
 
 		return null;
@@ -181,21 +187,36 @@ public class Scheduler implements Runnable, WorldListener {
 	}
 
 	private void fireEvent(SchedulerEvent e) {
-		SchedulerListener[] tab = new SchedulerListener[this.listeners.size()];
+		final SchedulerListener[] tab = new SchedulerListener[this.listeners.size()];
 		this.listeners.toArray(tab);
 
-		for (SchedulerListener schedulerListener : tab) {
+		for (final SchedulerListener schedulerListener : tab) {
 			schedulerListener.schedulerUpdated(e);
 		}
 	}
 
 	private void fireAgentAdded(Agent<?> agent) {
-		SchedulerEvent e = new SchedulerEvent(this, agent, SchedulerEvent.Type.AGENT_ADDED);
+		final SchedulerEvent e = new SchedulerEvent(this, agent, SchedulerEvent.Type.AGENT_ADDED);
 		fireEvent(e);
 	}
 
 	private void fireAgentRemoved(Agent<?> agent) {
-		SchedulerEvent e = new SchedulerEvent(this, agent, SchedulerEvent.Type.AGENT_REMOVED);
+		final SchedulerEvent e = new SchedulerEvent(this, agent, SchedulerEvent.Type.AGENT_REMOVED);
 		fireEvent(e);
+	}
+
+	public void loadLevel(Levels level) {
+		this.world.clearEntities();
+		// Loading a level.
+		final URL resource = Resources.getResource(getClass(), "fr/utbm/tc/qlearningmario/levels/" + level.toString() + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+		assert (resource != null);
+		try {
+			for (final Entity<?> entity : LevelLoader.loadLevelFromImage(resource)) {
+				this.world.addEntity(entity);
+			}
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

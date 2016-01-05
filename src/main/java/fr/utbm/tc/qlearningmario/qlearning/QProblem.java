@@ -33,63 +33,63 @@ import java.util.List;
  */
 public interface QProblem extends Cloneable, Serializable {
 
-	/** Return the learning rate.
+	/** Returns the learning rate.
 	 *
 	 * @return alpha
 	 */
 	float getAlpha();
 
-	/** Return the discount factor.
+	/** Returns the discount factor.
 	 *
 	 * @return gamma
 	 */
 	float getGamma();
 
-	/** Return a part of the exploration factor, this part allow Q-Learning algorithm to choose a random action.
+	/** Returns a part of the exploration factor, this part allow Q-Learning algorithm to choose a random action.
 	 *
 	 * @return rho
 	 */
 	float getRho();
 
-	/** Return a part of the exploration factor, this part allow Q-Learning algorithm to choose a random state.
+	/** Returns a part of the exploration factor, this part allow Q-Learning algorithm to choose a random state.
 	 *
 	 * @return nu
 	 */
 	float getNu();
 
-	/** Return all the states.
+	/** Returns all the states.
 	 *
 	 * @return a list of states.
 	 */
 	List<QState> getStates();
 
-	/** Return the current state.
+	/** Returns the current state.
 	 *
 	 * @return the current state
 	 */
 	QState getCurrentState();
 
-	/** Return a random state.
+	/** Returns a random state.
 	 *
 	 * @return a random state
 	 */
 	QState getRandomState();
 
-	/** Return actions availaible in the given state.
+	/** Returns actions available in the given state.
 	 *
 	 * @param state : a state
 	 * @return a list of actions
 	 */
 	List<QAction> getActions(QState state);
 
-	/** Return a random action depending on the given state.
+	/** Returns a random action depending on the given state.
 	 *
 	 * @param state : a state
 	 * @return a random action.
 	 */
 	QAction getRandomAction(QState state);
 
-	/** Take the action executed from the given state and compute a feedback
+	/** Takes the action executed from the given state and computes a feedback
 	 *
 	 * @param state : a state
 	 * @param action : an action available in the given state.

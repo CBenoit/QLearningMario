@@ -20,7 +20,6 @@
 
 package fr.utbm.tc.qlearningmario.mario;
 
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -28,7 +27,6 @@ import java.util.logging.Logger;
 import org.arakhne.afc.vmutil.Resources;
 import org.arakhne.afc.vmutil.locale.Locale;
 
-import fr.utbm.tc.qlearningmario.mario.entity.Entity;
 import fr.utbm.tc.qlearningmario.mario.entity.World;
 import fr.utbm.tc.qlearningmario.mario.ui.MainController;
 import fr.utbm.tc.qlearningmario.mario.ui.MarioGUI;
@@ -67,47 +65,41 @@ public class Game extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			FXMLLoader loader = new FXMLLoader();
+			final FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Resources.getResource(getClass(), "fr/utbm/tc/qlearningmario/MainWindow.fxml")); //$NON-NLS-1$
 
-			Pane root = (Pane) loader.load();
+			final Pane root = (Pane) loader.load();
+			final MainController mainController = (MainController)loader.getController();
 
-			Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+			mainController.setStage(primaryStage);
+
+			final Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle(Locale.getString(getClass(), "frame.title")); //$NON-NLS-1$
 
-			Canvas canvas = (Canvas) scene.lookup("#marioCanvas"); //$NON-NLS-1$
+			final Canvas canvas = (Canvas) scene.lookup("#marioCanvas"); //$NON-NLS-1$
 
 			SCENE_WIDTH =  (int) canvas.getWidth();
 			SCENE_HEIGHT = (int) canvas.getHeight();
 
-			GraphicsContext gc = canvas.getGraphicsContext2D();
+			final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-			World world = new World();
+			final World world = new World();
 
-			MarioGUI gui = new MarioGUI(gc);
+			final MarioGUI gui = new MarioGUI(gc);
 			world.addWorldListener(gui);
 			gui.start();
 
-			Scheduler scheduler = new Scheduler(world);
+			final Scheduler scheduler = new Scheduler(world);
+			mainController.setScheduler(scheduler);
 			world.addWorldListener(scheduler);
 
-			// Loading a level.
-			URL resource = Resources.getResource(getClass(), "fr/utbm/tc/qlearningmario/levels/levelB.png"); //$NON-NLS-1$
-			assert (resource != null);
-			for (Entity<?> entity : LevelLoader.loadLevelFromImage(resource)) {
-				world.addEntity(entity);
-			}
-
-			ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREAD);
+			final ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREAD);
 
 			// Run the scheduler.
 			executor.execute(scheduler);
 			executor.shutdown();
-
-			MainController.primaryStage = primaryStage;
-			MainController.scheduler = scheduler;
 
 			primaryStage.show();
 
@@ -116,7 +108,7 @@ public class Game extends Application {
 						this.log.info(Locale.getString(Game.this.getClass(), "closing.stage")); //$NON-NLS-1$
 						scheduler.stop();
 					});
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.log.severe(e.toString());
 		}
 	}

@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import org.arakhne.afc.vmutil.locale.Locale;
 
+import fr.utbm.tc.qlearningmario.mario.Levels;
 import fr.utbm.tc.qlearningmario.mario.Scheduler;
 import fr.utbm.tc.qlearningmario.mario.agent.MarioAgent;
 import javafx.beans.value.ChangeListener;
@@ -36,8 +37,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -45,13 +48,13 @@ import javafx.stage.WindowEvent;
 
 @SuppressWarnings({ "static-method", "unused" })
 public class MainController implements Initializable {
-	public static Stage primaryStage;
+	private Stage primaryStage;
 
-	public static Scheduler scheduler;
+	private Scheduler scheduler;
 
 	private URL currentFileURL;
 
-	private Logger logger = Logger.getLogger(MainController.class.toString());
+	private final Logger logger = Logger.getLogger(MainController.class.toString());
 
 	@FXML
 	private MenuBar mainMenuBar;
@@ -83,6 +86,17 @@ public class MainController implements Initializable {
 	@FXML
 	private TextField mindLearningIterationsText;
 
+	@FXML
+	private ToggleGroup next_level_group;
+
+	public void setScheduler(Scheduler scheduler) {
+		this.scheduler = scheduler;
+	}
+
+	public void setStage(Stage stage) {
+		this.primaryStage = stage;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		this.alphaSlider.valueProperty().addListener(
@@ -102,146 +116,159 @@ public class MainController implements Initializable {
 				handleNuChange());
 	}
 
+	@FXML
 	public void handleCloseAction(ActionEvent event) {
-		primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+		this.primaryStage.fireEvent(new WindowEvent(this.primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 
+	@FXML
 	public void handleOpenFile(ActionEvent event) {
-		FileChooser fileChooser = new FileChooser();
+		final FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(Locale.getString(this.getClass(), "fileChooser.window.title.load")); //$NON-NLS-1$
-		fileChooser.getExtensionFilters().addAll(
-				new FileChooser.ExtensionFilter("AI", "*.serai")); //$NON-NLS-1$ //$NON-NLS-2$
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("AI", "*.serai")); //$NON-NLS-1$ //$NON-NLS-2$
 
 
-		scheduler.pause();
+		this.scheduler.pause();
 
-		File file = fileChooser.showOpenDialog(primaryStage);
+		final File file = fileChooser.showOpenDialog(this.primaryStage);
 
 		if (file != null) {
 			try {
 				this.currentFileURL = file.toURI().toURL();
 				enableSaveMenuItem();
 
-				MarioAgent marioAgent = scheduler.getMarioAgent();
-				if (marioAgent != null) {
-					try {
-						marioAgent.loadQProblem(this.currentFileURL);
-					} catch (ClassNotFoundException e) {
-						this.logger.severe(e.getMessage());
-					}
-				}
-			} catch (IOException e) {
+				MarioAgent.loadQProblem(this.currentFileURL);
+			} catch (final IOException | ClassNotFoundException e) {
 				this.logger.severe(e.getMessage());
 			}
 		}
 
-		scheduler.unpause();
+		this.scheduler.unpause();
 	}
 
+	@FXML
 	public void handleSaveFile(ActionEvent event) {
 		if (this.currentFileURL != null) {
-			MarioAgent marioAgent = scheduler.getMarioAgent();
-			if (marioAgent != null) {
-				scheduler.pause();
+			this.scheduler.pause();
 
-				try {
-					marioAgent.saveQProblem(this.currentFileURL);
-				} catch (IOException e) {
-					this.logger.severe(e.getMessage());
-				}
-
-				scheduler.unpause();
+			try {
+				MarioAgent.saveQProblem(this.currentFileURL);
+			} catch (final IOException e) {
+				this.logger.severe(e.getMessage());
 			}
+
+			this.scheduler.unpause();
 		}
 	}
 
+	@FXML
 	public void handleSaveAsFile(ActionEvent event) {
-		FileChooser fileChooser = new FileChooser();
+		final FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(Locale.getString(this.getClass(), "fileChooser.window.title.save")); //$NON-NLS-1$
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("AI", "*.serai")  //$NON-NLS-1$ //$NON-NLS-2$
 				);
 
-		scheduler.pause();
+		this.scheduler.pause();
 
-		File file = fileChooser.showSaveDialog(primaryStage);
+		final File file = fileChooser.showSaveDialog(this.primaryStage);
 
 		if (file != null) {
 			try {
 				this.currentFileURL = file.toURI().toURL();
 				enableSaveMenuItem();
 
-				MarioAgent marioAgent = scheduler.getMarioAgent();
-				if (marioAgent != null) {
-					marioAgent.saveQProblem(this.currentFileURL);
-				}
-			} catch (IOException e) {
+				MarioAgent.saveQProblem(this.currentFileURL);
+			} catch (final IOException e) {
 				this.logger.severe(e.getMessage());
 			}
 		}
 
-		scheduler.unpause();
+		this.scheduler.unpause();
 	}
 
+	@FXML
 	public void handlePauseUnpause(ActionEvent event) {
-		if (scheduler.isPaused()) {
-			scheduler.unpause();
+		if (this.scheduler.isPaused()) {
+			this.scheduler.unpause();
 		} else {
-			scheduler.pause();
+			this.scheduler.pause();
 		}
 	}
 
+	@FXML
 	public void handleKillMario(ActionEvent event) {
-		MarioAgent marioAgent = scheduler.getMarioAgent();
+		final MarioAgent marioAgent = this.scheduler.getMarioAgent();
 		if (marioAgent != null) {
 			marioAgent.getBody().kill();
 		}
 	}
 
+	@FXML
 	public void handleAlphaChange() {
-		double alpha = this.alphaSlider.getValue();
-		String strVal = Double.toString(alpha);
+		final double alpha = this.alphaSlider.getValue();
+		final String strVal = Double.toString(alpha);
 		this.alphaLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
-		scheduler.getMarioAgent().getProblem().setAlpha((float) alpha);
+		MarioAgent.getProblem().setAlpha((float) alpha);
 	}
 
+	@FXML
 	public void handleGammaChange() {
-		double gamma = this.gammaSlider.getValue();
-		String strVal = Double.toString(gamma);
+		final double gamma = this.gammaSlider.getValue();
+		final String strVal = Double.toString(gamma);
 		this.gammaLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
-		scheduler.getMarioAgent().getProblem().setGamma((float) gamma);
+		MarioAgent.getProblem().setGamma((float) gamma);
 	}
 
+	@FXML
 	public void handleRhoChange() {
-		double rho = this.rhoSlider.getValue();
-		String strVal = Double.toString(rho);
+		final double rho = this.rhoSlider.getValue();
+		final String strVal = Double.toString(rho);
 		this.rhoLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
-		scheduler.getMarioAgent().getProblem().setRho((float) rho);
+		MarioAgent.getProblem().setRho((float) rho);
 	}
 
+	@FXML
 	public void handleNuChange() {
-		double nu = this.nuSlider.getValue();
-		String strVal = Double.toString(nu);
+		final double nu = this.nuSlider.getValue();
+		final String strVal = Double.toString(nu);
 		this.nuLabel.setText(strVal.substring(0, Math.min(4, strVal.length())));
-		scheduler.getMarioAgent().getProblem().setNu((float) nu);
+		MarioAgent.getProblem().setNu((float) nu);
 	}
 
+	@FXML
 	public void handleTextField(KeyEvent event) {
 		// Stops the event if the character is not a number.
 		try {
 			Integer.parseInt(event.getCharacter());
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			event.consume();
 		}
 	}
 
+	@FXML
 	public void handleMindLearn(ActionEvent event) {
-		MarioAgent marioAgent = scheduler.getMarioAgent();
-		if (marioAgent != null) {
-			marioAgent.mindLearn(Integer.parseInt(this.mindLearningIterationsText.getText()));
+		MarioAgent.mindLearn(Integer.parseInt(this.mindLearningIterationsText.getText()));
+	}
+
+	@FXML
+	public void handleResetLevel(ActionEvent event) {
+		switch (((RadioButton)this.next_level_group.getSelectedToggle()).getText()) {
+			case "Level A": //$NON-NLS-1$
+				this.scheduler.loadLevel(Levels.LEVEL_A);
+				break;
+			case "Level B": //$NON-NLS-1$
+				this.scheduler.loadLevel(Levels.LEVEL_B);
+				break;
+			case "Level C": //$NON-NLS-1$
+				this.scheduler.loadLevel(Levels.LEVEL_C);
+				break;
+			default :
+				break;
 		}
 	}
 
+	@FXML
 	private void enableSaveMenuItem() {
 		this.mainMenuBar.getMenus().get(0).getItems().get(1).setDisable(false);
 	}
