@@ -1,11 +1,32 @@
 # QLearningMario
 
-Q-Learning implementation for TZ20 project in UTBM.
+## Introduction
 
-This project uses Maven to manage dependencies and compilation process.
+A Q-learning implementation for a TZ20 project in UTBM.
+
+Dependencies and compilation process managed using Maven.
+
+## Authors
+
++ Benoît CORTIER - main developer (benoit.cortier@gmail.com)
++ Jérôme BOULMIER - main developer (jerome.boulmier@outlook.fr)
+
+## Download
+
+You can get the current development version from the git repository [on Github](https://github.com/CBenoit/radix-sort-project-utbm-lo27).
+
+
+## Requirements
+
+- Java 1.8 or greater.
 
 Dependencies:
-  - Java 1.8 or greater.
-  - AFC math 12.0 or greater (http://arakhne.org/afc/index.html)
-  - AFC vmutils 12.0 or greater (http://arakhne.org/afc/index.html)
-  - Junit 4.12 or greater.
+  - math and vmutils from AFC 12.0 or greater (http://arakhne.org/afc/index.html)
+  - Junit 4.12 or greater (required only to run the tests).
+
+## Copyright
+
+License: zlib/libpng
+
+Read [license](license.txt) file.
+
