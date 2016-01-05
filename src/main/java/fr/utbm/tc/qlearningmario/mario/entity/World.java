@@ -91,25 +91,21 @@ public class World {
 	}
 
 	public void addEntity(Entity<?> entity) {
-		synchronized (this.entities) {
-			this.entities.add(entity);
+		this.entities.add(entity);
 
-			if (entity instanceof MarioBody) {
-				this.mario = (MarioBody) entity;
-			}
-
-			fireEntityAdded(entity);
+		if (entity instanceof MarioBody) {
+			this.mario = (MarioBody) entity;
 		}
+
+		fireEntityAdded(entity);
 	}
 
 	public void clearEntities() {
-		synchronized (this.entities) {
-			for (final Entity<?> entity : this.entities) {
-				fireEntityRemoved(entity);
-			}
-
-			this.entities.clear();
+		for (final Entity<?> entity : this.entities) {
+			fireEntityRemoved(entity);
 		}
+
+		this.entities.clear();
 	}
 
 	private void updateMobileEntity(MobileEntity<?> mobileEntity) {
