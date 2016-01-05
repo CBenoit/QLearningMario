@@ -49,7 +49,7 @@ public class MarioAgent extends Agent<MarioBody> {
 
 	private static final MarioProblem PROBLEM = new MarioProblem();
 
-	private static final QLearning<MarioProblem> QLEARNING = new QLearning<>(PROBLEM);
+	private static QLearning<MarioProblem> QLEARNING = new QLearning<>(PROBLEM);
 
 	/** Initialize the agent with the given MarioBody.
 	 *
@@ -115,5 +115,9 @@ public class MarioAgent extends Agent<MarioBody> {
 		} else {
 			getBody().askAcceleration(new Point2D(-getBody().getVelocity().getX(), 0));
 		}
+	}
+
+	public static void reset() {
+		QLEARNING = new QLearning<>(PROBLEM);
 	}
 }

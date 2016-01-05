@@ -67,10 +67,11 @@
                         </VBox>
                         <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePauseUnpause" text="Pause/Unpause" />
                         <Button layoutX="166.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleKillMario" text="Kill Mario" />
-                        <Button layoutX="154.0" layoutY="137.0" mnemonicParsing="false" onAction="#handleResetLevel" text="Reset level" />
+                        <Button layoutX="137.0" layoutY="137.0" mnemonicParsing="false" onAction="#handleResetLevel" prefHeight="26.0" prefWidth="100.0" text="Reset level" />
                         <Button layoutX="14.0" layoutY="49.0" mnemonicParsing="false" onAction="#handleMindLearn" text="Mind learn" />
                         <TextField fx:id="mindLearningIterationsText" layoutX="101.0" layoutY="49.0" onKeyTyped="#handleTextField" prefHeight="26.0" prefWidth="83.0" text="10000000" />
                         <Text layoutX="187.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="times" />
+                        <Button layoutX="137.0" layoutY="108.0" mnemonicParsing="false" onAction="#handleResetMario" prefHeight="26.0" prefWidth="100.0" text="Reset Mario" />
                      </children></AnchorPane>
                </content>
             </TitledPane>

@@ -269,6 +269,13 @@ public class MainController implements Initializable {
 	}
 
 	@FXML
+	public void handleResetMario(ActionEvent event) {
+		this.scheduler.pause();
+		MarioAgent.reset();
+		this.scheduler.unpause();
+	}
+
+	@FXML
 	private void enableSaveMenuItem() {
 		this.mainMenuBar.getMenus().get(0).getItems().get(1).setDisable(false);
 	}
