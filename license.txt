@@ -1,7 +1,7 @@
 This software is under the zlib/libpng license.
 ----------------------------------------------
 
-Radix Sort LO27 Project for the UTBM.
+QLearningMario TZ20 Project for the UTBM.
 Copyright (C) 2015 BOULMIER Jérôme, CORTIER Benoît
 
 This software is provided 'as-is', without any express or implied warranty.
