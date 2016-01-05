@@ -80,7 +80,7 @@ public class QLearning<Problem extends QProblem> {
 		}
 	}
 
-	/** Algorithm learn with this method.
+	/** Algorithm learns with this method.
 	 *
 	 * @param numberOfIterations : Number of iterations to execute this time.
 	 */
@@ -108,7 +108,7 @@ public class QLearning<Problem extends QProblem> {
 		}
 	}
 
-	/** Update the Q-Learning graph.
+	/** Updates the Q-Learning graph.
 	 *
 	 * @param state : state from which the feedback is given.
 	 * @param action : action to evaluate in the given state.
@@ -156,7 +156,7 @@ public class QLearning<Problem extends QProblem> {
 		return bestActions.get(this.randomGenerator.nextInt(bestActions.size()));
 	}
 
-	/** Return the Q-Value corresponding to the given state and action.
+	/** Returns the Q-Value corresponding to the given state and action.
 	 *
 	 * @param state : a state
 	 * @param action : an action
