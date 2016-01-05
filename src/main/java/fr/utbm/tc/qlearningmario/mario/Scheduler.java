@@ -67,6 +67,8 @@ public class Scheduler implements Runnable, WorldListener {
 
 	private final List<SchedulerListener> listeners = new ArrayList<>();
 
+	private Levels levelToLoad = null;
+
 	/** Initialize a new Scheduler with the given world.
 	 *
 	 * @param world : the world.
@@ -104,6 +106,10 @@ public class Scheduler implements Runnable, WorldListener {
 				} catch (final InterruptedException e) {
 					this.log.severe(e.toString());
 				}
+			}
+
+			if (this.levelToLoad != null) {
+				loadLevel();
 			}
 		}
 
@@ -206,9 +212,13 @@ public class Scheduler implements Runnable, WorldListener {
 	}
 
 	public void loadLevel(Levels level) {
+		this.levelToLoad = level;
+	}
+
+	private void loadLevel() {
 		this.world.clearEntities();
 		// Loading a level.
-		final URL resource = Resources.getResource(getClass(), "fr/utbm/tc/qlearningmario/levels/" + level.toString() + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+		final URL resource = Resources.getResource(getClass(), "fr/utbm/tc/qlearningmario/levels/" + this.levelToLoad.toString() + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
 		assert (resource != null);
 		try {
 			for (final Entity<?> entity : LevelLoader.loadLevelFromImage(resource)) {
@@ -218,5 +228,7 @@ public class Scheduler implements Runnable, WorldListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		this.levelToLoad = null;
 	}
 }

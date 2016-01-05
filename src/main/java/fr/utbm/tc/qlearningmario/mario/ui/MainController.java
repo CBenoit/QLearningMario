@@ -253,6 +253,7 @@ public class MainController implements Initializable {
 
 	@FXML
 	public void handleResetLevel(ActionEvent event) {
+		this.scheduler.pause();
 		switch (((RadioButton)this.next_level_group.getSelectedToggle()).getText()) {
 			case "Level A": //$NON-NLS-1$
 				this.scheduler.loadLevel(Levels.LEVEL_A);
@@ -266,6 +267,8 @@ public class MainController implements Initializable {
 			default :
 				break;
 		}
+
+		this.scheduler.unpause();
 	}
 
 	@FXML
