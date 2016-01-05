@@ -13,7 +13,7 @@ Dependencies and compilation process managed using Maven.
 
 ## Download
 
-You can get the current development version from the git repository [on Github](https://github.com/CBenoit/radix-sort-project-utbm-lo27).
+You can get the current development version from the git repository [on Github](https://github.com/Lomadriel/QLearningMario).
 
 
 ## Requirements
