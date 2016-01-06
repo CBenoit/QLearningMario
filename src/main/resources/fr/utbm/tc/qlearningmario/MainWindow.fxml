@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<Pane prefHeight="260.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.tc.qlearningmario.mario.ui.MainController">
+<Pane prefHeight="520.0" prefWidth="1040.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.tc.qlearningmario.mario.ui.MainController">
    <children>
-      <MenuBar fx:id="mainMenuBar" prefHeight="30.0" prefWidth="520.0">
+      <MenuBar fx:id="mainMenuBar" prefHeight="30.0" prefWidth="1040.0">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
@@ -27,7 +27,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <Accordion layoutX="260.0" layoutY="30.0" prefHeight="230.0" prefWidth="260.0">
+      <Accordion layoutX="520.0" layoutY="30.0" prefHeight="490.0" prefWidth="520.0">
          <panes>
             <TitledPane animated="false" text="QLearning">
                <content>
@@ -77,6 +77,6 @@
             </TitledPane>
          </panes>
       </Accordion>
-      <Canvas fx:id="marioCanvas" height="230.0" layoutY="30.0" width="260.0" />
+      <Canvas fx:id="marioCanvas" height="490.0" layoutY="30.0" width="520.0" />
    </children>
 </Pane>
