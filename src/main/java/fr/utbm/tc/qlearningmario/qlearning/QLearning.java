@@ -57,11 +57,11 @@ public class QLearning<Problem extends QProblem> {
 	public QLearning(Problem problem) {
 		this.problem = problem;
 
-		for (QState state : problem.getStates()) {
-			Map<QAction, Float> temp = new TreeMap<>(new QActionNumberComparator());
+		for (final QState state : problem.getStates()) {
+			final Map<QAction, Float> temp = new TreeMap<>(new QActionNumberComparator());
 			this.qValues.put(state, temp);
 
-			for (QAction action : problem.getActions(state)) {
+			for (final QAction action : problem.getActions(state)) {
 				temp.put(action, 0f);
 			}
 		}
@@ -69,14 +69,14 @@ public class QLearning<Problem extends QProblem> {
 
 	public void saveQValues(URL fileName) throws IOException {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName.getPath()))) {
-			oos.writeObject(this.qValues); // FIXME: TreeMaps cannot be serialized.
+			oos.writeObject(this.qValues);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadQValues(URL fileName) throws IOException, ClassNotFoundException {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName.getPath()))) {
-			this.qValues = (Map<QState, Map<QAction, Float>>) ois.readObject(); // FIXME: TreeMaps cannot be serialized.
+			this.qValues = (Map<QState, Map<QAction, Float>>) ois.readObject();
 		}
 	}
 
@@ -115,12 +115,12 @@ public class QLearning<Problem extends QProblem> {
 	 * @return return a feedback of the action in the given state.
 	 */
 	private QFeedback getFeedback(QState state, QAction action) {
-		QFeedback result = this.problem.takeAction(state, action);
+		final QFeedback result = this.problem.takeAction(state, action);
 
-		QAction bestNextAction = getBestAction(result.getNewState());
-		float bestNextActionValue = getQValue(result.getNewState(), bestNextAction);
+		final QAction bestNextAction = getBestAction(result.getNewState());
+		final float bestNextActionValue = getQValue(result.getNewState(), bestNextAction);
 
-		float qValue = (1f - this.problem.getAlpha())
+		final float qValue = (1f - this.problem.getAlpha())
 				* getQValue(state, action)
 				+ this.problem.getAlpha()
 				* (result.getScore()
@@ -138,11 +138,11 @@ public class QLearning<Problem extends QProblem> {
 	 */
 	@SuppressWarnings("boxing")
 	public QAction getBestAction(QState state) {
-		Map<QAction, Float> qValuesState = this.qValues.get(state);
-		List<QAction> bestActions = new ArrayList<>();
+		final Map<QAction, Float> qValuesState = this.qValues.get(state);
+		final List<QAction> bestActions = new ArrayList<>();
 		float bestScore = Float.NEGATIVE_INFINITY;
 
-		for (Entry<QAction, Float> entry : qValuesState.entrySet()) {
+		for (final Entry<QAction, Float> entry : qValuesState.entrySet()) {
 			if (entry.getValue() > bestScore) {
 				bestScore = entry.getValue();
 
@@ -163,7 +163,7 @@ public class QLearning<Problem extends QProblem> {
 	 * @return the qValue.
 	 */
 	public float getQValue(QState state, QAction action) {
-		Float qValue = this.qValues.get(state).get(action);
+		final Float qValue = this.qValues.get(state).get(action);
 
 		if (qValue == null) {
 			return 0f;
